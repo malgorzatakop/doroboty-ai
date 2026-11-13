@@ -24,9 +24,11 @@ const entries = [
   "package-lock.json",
   "index.html",
   "vite.config.ts",
+  "vercel.json",
   "tsconfig.json",
   "vitest.config.ts",
   "playwright.config.ts",
+  "playwright.recovery.config.ts",
   "eslint.config.mjs",
   ".nvmrc",
   ".prettierrc.json",
@@ -49,6 +51,7 @@ const entries = [
   "docs/design-system",
   "docs/PARTICIPANT_GUIDE.md",
   "docs/SECURITY.md",
+  "docs/RELEASE.md",
   "docs/case",
 ];
 fs.mkdirSync(target, { recursive: true });

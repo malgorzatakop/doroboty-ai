@@ -2,6 +2,8 @@
 
 A frontend-only job marketplace for participants to extend and test. Built with React, TypeScript and Vite, using Base UI components. The required visual direction for new and changed screens is the accepted Poster People design system.
 
+Project repository: [MK-priv33/doroboty-ai](https://github.com/MK-priv33/doroboty-ai).
+
 ## Design system — start here for UI work
 
 Read [project integration instructions](docs/design-system/README.md), [host implementation rules](docs/design-system/IMPLEMENTATION.md) and [application acceptance checklist](docs/design-system/VERIFICATION.md), then [design.md](docs/design-system/agent-kit/design.md), [component API](docs/design-system/agent-kit/components/API.md) and the relevant [human documentation](docs/design-system/agent-kit/reference/index.html). The complete 67-file kit is stored under docs/design-system/agent-kit, including reusable CSS/JS, component states, listing/offer examples, screenshots, Geist Serif with license and illustration. No other chat or global skill is required.
@@ -28,6 +30,8 @@ Open http://127.0.0.1:3001. No environment file, account, database or additional
 
 Select Anna or Marek as a candidate, Karolina or Tomasz as an employer, or the instructor. Publish a job, apply, switch person and record the employer decision. Changes survive reload in this browser; settings provide export, import and reset. AI and scores simulate prepared scenarios. Use example CVs only.
 
+Candidates can create a reusable AI experience card from their profile: three required answers, a project stage and two optional answers, with a 1000-character limit per answer. Save a partial draft or preview the completed card, then choose whether to attach it to an application. Submitted cards remain unchanged when the profile is edited. Anna's empty card offers an explicitly fictional example. Browser-local drafts and scenario edits are not stored in Git; use settings export/import to move them between browsers.
+
 ## Build and verify
 
 ```sh
@@ -38,4 +42,10 @@ npm run preview
 
 The static output is dist/. Browser checks require an already provisioned Playwright Chromium; starting the app never installs it. See [participant guide](docs/PARTICIPANT_GUIDE.md), [architecture](docs/architecture.md), [current features](FEATURES.md) and [case protocol](docs/case/CASE_PROTOCOL.md).
 
+If Google Chrome is already installed, use `PLAYWRIGHT_CHANNEL=chrome ./scripts/verify` to run browser checks with that installation instead of downloading Playwright Chromium.
+
 To distribute a baseline participant package, run npm run package:participant -- /absolute/output/directory. This excludes Git history and instructor source material. Never distribute this repository’s history as a stage-safe packet.
+
+## Release preparation
+
+See [release and recovery runbook](docs/RELEASE.md) for the synthetic-data pilot, Vercel build settings, smoke checks, rollback and incident response. The local readiness report is `docs/production-readiness.html`. No live deployment has been verified.

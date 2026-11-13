@@ -4,17 +4,9 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { usePrototype } from "./store";
 import { serializeState, MAX_IMPORT_BYTES } from "./storage";
 import { PageTitle } from "./shell";
+import { downloadText } from "@/lib/download-text";
+import { diagnosticSnapshot } from "./diagnostics";
 
-export function downloadText(name: string, text: string, type = "application/json") {
-  const url = URL.createObjectURL(new Blob([text], { type }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 export function SettingsPage() {
   const { state, reset, importState, original } = usePrototype();
   const [pending, setPending] = useState<"reset" | "import" | null>(null);
@@ -40,9 +32,9 @@ export function SettingsPage() {
   function confirm() {
     if (pending === "reset") {
       reset();
-      setMessage("Przywrócono scenariusz początkowy.");
+      setMessage("Przywrócono scenariusz początkowy w tej karcie.");
     } else if (importState(raw)) {
-      setMessage("Dane zostały zaimportowane.");
+      setMessage("Dane zostały zaimportowane do tej karty.");
     }
     setPending(null);
   }
@@ -99,6 +91,33 @@ export function SettingsPage() {
           Wybór osoby zastępuje logowanie. Propozycje AI, Match Score i podsumowania odtwarzają
           przygotowany scenariusz; nie oceniają kompetencji. Używaj przykładowych danych i CV.
         </p>
+        <h3>Zgłoś problem</h3>
+        <p>
+          Napisz bezpośrednio do osoby, od której masz link do prototypu. Podaj adres strony,
+          przeglądarkę, godzinę i opis wykonanych kroków. Nie przesyłaj eksportu scenariusza,
+          odpowiedzi ani danych osobowych. Przed odświeżeniem wyeksportuj własne zmiany.
+        </p>
+      </section>
+      <section className="prototype-panel prototype-form mt-6">
+        <h2>Informacje o błędach</h2>
+        <p>
+          Jeśli coś nie działa, pobierz diagnostykę przed odświeżeniem i dołącz ją do zgłoszenia.
+          Plik zawiera wyłącznie wersję aplikacji, kody zdarzeń i ich czas, bez Twoich odpowiedzi
+          ani danych scenariusza. Zdarzenia są przechowywane tylko w pamięci tej karty.
+        </p>
+        <div>
+          <Button
+            variant="outline"
+            onClick={() =>
+              downloadText(
+                "doroboty-diagnostyka.json",
+                JSON.stringify(diagnosticSnapshot(), null, 2),
+              )
+            }
+          >
+            Pobierz diagnostykę
+          </Button>
+        </div>
       </section>
       <ConfirmDialog
         open={pending !== null}

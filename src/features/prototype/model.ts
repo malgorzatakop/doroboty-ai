@@ -2,6 +2,12 @@ import { z } from "zod";
 import marketplace from "./data/marketplace.json" with { type: "json" };
 import people from "./data/people.json" with { type: "json" };
 import type { JobWithCompany } from "@/features/jobs/types";
+import {
+  experienceCardDraftSchema,
+  experienceCardSchema,
+  experienceCardSnapshotSchema,
+  type ExperienceCardDraft,
+} from "./experience-card-model";
 
 const id = z
   .string()
@@ -72,6 +78,7 @@ const personSchema = profileSchema.extend({
   cv: text,
   exampleScore: z.number().int().min(0).max(100),
   exampleSummary: text,
+  experienceCard: experienceCardDraftSchema.optional(),
 });
 export const stages = [
   "submitted",
@@ -115,6 +122,7 @@ const applicationSchema = z.object({
   answer: text.min(MIN_APPLICATION_ANSWER_LENGTH),
   sourceNotes: text,
   generatedAnswer: text,
+  experienceCard: experienceCardSnapshotSchema.optional(),
   score: z.number().int().min(0).max(100),
   summary: text,
   stage: z.enum(stages),
@@ -129,6 +137,7 @@ const draftSchema = z.object({
   notes: text,
   generated: text,
   answer: text,
+  includeExperienceCard: z.boolean().optional(),
 });
 export const stateSchema = z
   .object({
@@ -200,8 +209,16 @@ export type Application = State["applications"][number];
 export type Action =
   | { type: "select_person"; id: string | null }
   | { type: "profile"; value: z.infer<typeof profileSchema> }
+  | { type: "experience_card"; value: ExperienceCardDraft; complete: boolean }
   | { type: "toggle_saved"; jobId: string }
-  | { type: "draft"; jobId: string; notes: string; generated: string; answer: string }
+  | {
+      type: "draft";
+      jobId: string;
+      notes: string;
+      generated: string;
+      answer: string;
+      includeExperienceCard?: boolean;
+    }
   | {
       type: "submit";
       jobId: string;
@@ -209,6 +226,7 @@ export type Action =
       generated: string;
       answer: string;
       consent: boolean;
+      includeExperienceCard?: boolean;
     }
   | { type: "stage"; applicationId: string; stage: Stage; note: string }
   | { type: "withdraw"; applicationId: string }
@@ -280,7 +298,11 @@ export function transition(
     s.activePersonId = action.id;
   } else if (action.type === "profile")
     Object.assign(candidate(), profileSchema.parse(action.value));
-  else if (action.type === "toggle_saved") {
+  else if (action.type === "experience_card") {
+    candidate().experienceCard = (
+      action.complete ? experienceCardSchema : experienceCardDraftSchema
+    ).parse(action.value);
+  } else if (action.type === "toggle_saved") {
     const p = candidate();
     if (!s.jobs.some((x) => x.id === action.jobId)) fail("Nie znaleziono oferty.");
     const index = s.saved.findIndex((x) => x.candidateId === p.id && x.jobId === action.jobId);
@@ -298,6 +320,11 @@ export function transition(
     if (!action.consent) fail("Zatwierdź treść i zgodę na przesłanie aplikacji.");
     if (s.applications.some((x) => x.candidateId === p.id && x.jobId === job.id))
       fail("Aplikacja na tę ofertę została już wysłana.");
+    const card = action.includeExperienceCard
+      ? experienceCardSchema.safeParse(p.experienceCard)
+      : null;
+    if (card && !card.success)
+      fail("Uzupełnij i zapisz kartę doświadczenia z AI przed dołączeniem jej do aplikacji.");
     s.applications.push(
       applicationSchema.parse({
         id: newId,
@@ -310,6 +337,7 @@ export function transition(
         answer: action.answer,
         sourceNotes: action.notes,
         generatedAnswer: action.generated,
+        ...(card?.success ? { experienceCard: card.data } : {}),
         score: p.exampleScore,
         summary: p.exampleSummary,
         stage: "submitted",

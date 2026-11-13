@@ -17,6 +17,7 @@ import {
 import { EmployerJobs, EmployerJobEditor, CompanyEditor } from "./employer";
 import { SettingsPage, PrivacyPage } from "./settings";
 import { CasePage } from "./case";
+import { ExperienceCardPage } from "./experience-card";
 function AppRoutes() {
   return (
     <Routes>
@@ -45,6 +46,14 @@ function AppRoutes() {
           }
         />
         <Route path="app/onboarding" element={<Navigate to="/app/profil" replace />} />
+        <Route
+          path="app/profil/karta"
+          element={
+            <RequireRole role="candidate">
+              <ExperienceCardPage />
+            </RequireRole>
+          }
+        />
         <Route
           path="app/profil"
           element={

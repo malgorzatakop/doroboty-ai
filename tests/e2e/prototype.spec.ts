@@ -28,7 +28,8 @@ for (const [name, filename] of [
   }) => {
     const external: string[] = [];
     page.on("request", (request) => {
-      if (!request.url().startsWith("http://127.0.0.1:3106")) external.push(request.url());
+      if (/^https?:/.test(request.url()) && !request.url().startsWith("http://127.0.0.1:3106"))
+        external.push(request.url());
     });
     await choose(page, name);
     await page.goto("/#/app/profil");
@@ -994,4 +995,65 @@ test("candidate snapshot supports custom CV and long content at desktop and mobi
   await expect(page.getByRole("tabpanel", { name: "Odpowiedź", exact: true })).toContainText(
     record.answer,
   );
+});
+
+test("only one tab persists a scenario and a stale tab keeps an exportable copy", async ({
+  page,
+  context,
+}) => {
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/app/profil");
+  const second = await context.newPage();
+  await second.goto("/#/app/profil");
+  await expect(second.getByRole("status")).toContainText("Zapis tej karty czeka");
+  await second.getByLabel("Imię i nazwisko").fill("Kopia drugiej karty");
+  await second.getByRole("button", { name: "Zapisz profil", exact: true }).click();
+  await page.getByLabel("Imię i nazwisko").fill("Zapis pierwszej karty");
+  await page.getByRole("button", { name: "Zapisz profil", exact: true }).click();
+  const stored = await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY);
+  expect(stored).toContain("Zapis pierwszej karty");
+  expect(stored).not.toContain("Kopia drugiej karty");
+  await second.goto("/#/app/settings");
+  const exported = second.waitForEvent("download");
+  await second.getByRole("button", { name: "Eksportuj dane", exact: true }).click();
+  const { readFile } = await import("node:fs/promises");
+  expect(await readFile((await (await exported).path())!, "utf8")).toContain("Kopia drugiej karty");
+  await page.close();
+  await expect(second.getByRole("status")).toContainText("Inna karta zmieniła");
+  const imported = initialState();
+  await second.getByLabel("Importuj plik scenariusza").setInputFiles({
+    name: "scenario.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(imported)),
+  });
+  await second.getByRole("button", { name: "Importuj", exact: true }).click();
+  expect(await second.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toBe(stored);
+  await second.getByRole("button", { name: "Resetuj scenariusz", exact: true }).click();
+  await second.getByRole("button", { name: "Resetuj", exact: true }).click();
+  expect(await second.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toBe(stored);
+  await second.reload();
+  await second.goto("/#/app/profil");
+  await expect(second.getByLabel("Imię i nazwisko")).toHaveValue("Zapis pierwszej karty");
+  await second.getByLabel("Imię i nazwisko").fill("Zapis po odświeżeniu");
+  await second.getByRole("button", { name: "Zapisz profil", exact: true }).click();
+  expect(await second.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toContain(
+    "Zapis po odświeżeniu",
+  );
+});
+
+test("missing Web Locks keeps edits in memory without unsafe persistent writes", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "locks", { value: undefined });
+  });
+  await choose(page, "Anna Kowalska");
+  await expect(page.getByRole("status")).toContainText("nie obsługuje bezpiecznego zapisu");
+  await page.goto("/#/app/profil");
+  await expect(page.getByLabel("Imię i nazwisko")).toHaveValue("Anna Kowalska");
+  expect(await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toBeNull();
+  await page.goto("/#/app/settings");
+  const exported = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Eksportuj dane", exact: true }).click();
+  expect((await exported).suggestedFilename()).toBe("doroboty-scenariusz.json");
 });

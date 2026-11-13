@@ -1,0 +1,9 @@
+{
+  "project": "Jako Product Managerka przygotowałam próbę wykorzystania ChatGPT do tworzenia szkiców odpowiedzi na reklamacje w firmie usługowej. Chcieliśmy ułatwić konsultantom przygotowanie odpowiedzi zgodnych z zasadami firmy. AI proponowało treść, a konsultant sprawdzał ją i zatwierdzał przed użyciem.",
+  "stage": "trial",
+  "contribution": "Uporządkowałam typy reklamacji, napisałam instrukcję dla ChatGPT i porównałam szkice z 20 przykładowymi sprawami. Po mojej korekcie instrukcji liczba szkiców obiecujących nieuprawniony zwrot spadła z 4 do 1 na tym samym zestawie. Prawniczka sprawdziła zasady reklamacji, a konsultanci ocenili zrozumiałość odpowiedzi. Nie mierzyliśmy jeszcze oszczędności czasu ani efektu w rzeczywistej obsłudze klientów.",
+  "aiUse": "Używam ChatGPT do przygotowania pierwszego szkicu odpowiedzi na podstawie zanonimizowanego opisu sprawy i zasad reklamacji. Sama dobieram informacje oraz sprawdzam, czy odpowiedź jest zgodna z zasadami, nie zawiera zmyślonych faktów i nie obiecuje nieuprawnionego zwrotu. Poprawiam szkic przed przekazaniem go do zatwierdzenia konsultantowi.",
+  "workExample": "Fragment przygotowanej przeze mnie instrukcji: „Na podstawie opisu reklamacji i podanych zasad przygotuj szkic odpowiedzi. Nie obiecuj zwrotu, jeśli nie wynika on z zasad. Brakujące informacje wypisz jako pytania do konsultanta”. Opracowałam też listę kontrolną: zgodność z zasadami, brak nowych obietnic, jasny język. Instrukcja i lista kontrolna są moim wkładem; zasady reklamacji sprawdziła prawniczka.",
+  "workUrl": "",
+  "lesson": "Szkice brzmiały wiarygodnie, ale czasem zawierały nieuprawnioną obietnicę zwrotu. Dodałam takie przypadki do listy kontrolnej i pozostawiłam zatwierdzanie odpowiedzi konsultantowi. Nauczyłam się oddzielać poprawny styl wypowiedzi od zgodności z zasadami i sprawdzać również sytuacje, w których AI powinno poprosić o dodatkowe informacje."
+}

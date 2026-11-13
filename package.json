@@ -18,7 +18,8 @@
     "package:participant": "node scripts/package-participant.mjs",
     "verify:packet": "node scripts/verify-participant.mjs",
     "design-system:check": "node docs/design-system/verify-kit.mjs && npm --prefix docs/design-system/agent-kit run check",
-    "design-system:dev": "npm --prefix docs/design-system/agent-kit run dev"
+    "design-system:dev": "npm --prefix docs/design-system/agent-kit run dev",
+    "test:recovery": "playwright test --config playwright.recovery.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -39,7 +40,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "prettier": "^3.9.9",
-    "shadcn": "^4.21.3",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.3",
@@ -53,7 +53,12 @@
     "globals": "^16.0.0"
   },
   "engines": {
-    "node": ">=24 <27"
+    "node": "24.x"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    }
+  }
 }

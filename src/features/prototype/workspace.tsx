@@ -16,6 +16,8 @@ import { CvAttachment } from "./cv-attachment";
 import { MatchScore } from "./match-score";
 import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
+import { ExperienceCardContent, ExperienceCardProfile } from "./experience-card";
+import { experienceCardSchema } from "./experience-card-model";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -197,6 +199,7 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           {message && <p role="status">{message}</p>}
         </form>
       )}
+      <ExperienceCardProfile preview={preview} />
       <section className="prototype-panel mt-6">
         <h2 className="mb-4 flex items-center gap-2">
           <FileText className="size-5" />
@@ -240,6 +243,10 @@ export function ApplyPage() {
   const generated = draft?.generated ?? "";
   const [answer, setAnswer] = useState(draft?.answer ?? "");
   const [consent, setConsent] = useState(false);
+  const card = experienceCardSchema.safeParse(person.experienceCard);
+  const [includeExperienceCard, setIncludeExperienceCard] = useState(
+    card.success && (draft?.includeExperienceCard ?? true),
+  );
   const [message, setMessage] = useState("");
   const [attempted, setAttempted] = useState(false);
   const answerInput = useRef<HTMLTextAreaElement>(null);
@@ -281,7 +288,17 @@ export function ApplyPage() {
       document.getElementById("application-consent")?.focus();
       return;
     }
-    if (run({ type: "submit", jobId: job!.id, notes, generated, answer, consent })) {
+    if (
+      run({
+        type: "submit",
+        jobId: job!.id,
+        notes,
+        generated,
+        answer,
+        consent,
+        includeExperienceCard,
+      })
+    ) {
       submittedOnce.current = true;
       setSubmitted(true);
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -352,6 +369,39 @@ export function ApplyPage() {
                 : `Minimum ${MIN_APPLICATION_ANSWER_LENGTH} znaków. Obecnie: ${answerLength}.`}
             </p>
           </section>
+          <section className="application-form-section" aria-labelledby="application-card-title">
+            <h3 id="application-card-title">Karta doświadczenia z AI</h3>
+            {card.success ? (
+              <div className="application-card-choice">
+                <label className="application-consent">
+                  <Checkbox
+                    checked={includeExperienceCard}
+                    disabled={submitted}
+                    onCheckedChange={(checked) => {
+                      setIncludeExperienceCard(checked);
+                      setConsent(false);
+                    }}
+                    aria-label="Dołącz kartę doświadczenia z AI"
+                  />
+                  <span>Dołącz kartę doświadczenia z AI z mojego profilu.</span>
+                </label>
+                <p className="application-help">
+                  Pracodawca otrzyma kopię karty z chwili wysłania aplikacji.
+                </p>
+                <details>
+                  <summary>Sprawdź kartę przed wysłaniem</summary>
+                  <ExperienceCardContent card={card.data} />
+                </details>
+              </div>
+            ) : (
+              <p className="application-help">
+                {person.experienceCard
+                  ? "Twoja karta jest jeszcze szkicem. Uzupełnij ją w profilu, aby dołączyć do aplikacji."
+                  : "Nie masz jeszcze karty. Możesz opisać swój projekt z AI w profilu i używać tej samej karty w kolejnych rekrutacjach."}{" "}
+                Możesz też wysłać tę aplikację bez karty.
+              </p>
+            )}
+          </section>
           <div className="application-form-section application-submit">
             <label className="application-consent">
               <Checkbox
@@ -387,7 +437,18 @@ export function ApplyPage() {
                 disabled={submitted}
                 variant="outline"
                 onClick={() => {
-                  if (run({ type: "draft", jobId: job.id, notes, generated, answer }))
+                  if (
+                    run({
+                      type: "draft",
+                      jobId: job.id,
+                      notes,
+                      generated,
+                      answer,
+                      ...(card.success || draft?.includeExperienceCard !== undefined
+                        ? { includeExperienceCard }
+                        : {}),
+                    })
+                  )
                     setMessage("Szkic został zapisany.");
                 }}
               >

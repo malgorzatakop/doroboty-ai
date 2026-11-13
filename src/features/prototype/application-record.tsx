@@ -5,6 +5,7 @@ import { RecordSheet } from "@/components/record-sheet";
 import { CvAttachment } from "./cv-attachment";
 import { MatchScore } from "./match-score";
 import { stageLabels, type Application, type Stage } from "./model";
+import { ExperienceCardContent } from "./experience-card";
 
 type RecordEvent = { stage: Stage; at: string; note?: string };
 const dateFormat = new Intl.DateTimeFormat("pl-PL", {
@@ -24,7 +25,15 @@ export function ApplicationRecord({
 }: {
   application: Pick<
     Application,
-    "candidateId" | "candidateName" | "jobTitle" | "stage" | "answer" | "cv" | "score" | "summary"
+    | "candidateId"
+    | "candidateName"
+    | "jobTitle"
+    | "stage"
+    | "answer"
+    | "cv"
+    | "score"
+    | "summary"
+    | "experienceCard"
   >;
   companyName: string;
   audience: "candidate" | "employer";
@@ -68,6 +77,21 @@ export function ApplicationRecord({
         <RecordSheet
           label={candidate ? "Twoja wysłana aplikacja" : "Materiały kandydata"}
           sections={[
+            ...(application.experienceCard
+              ? [
+                  {
+                    value: "experience",
+                    label: "Karta AI",
+                    content: (
+                      <>
+                        <h3>Karta doświadczenia z AI</h3>
+                        <p className="record-caption">Kopia z momentu wysłania aplikacji.</p>
+                        <ExperienceCardContent card={application.experienceCard} />
+                      </>
+                    ),
+                  },
+                ]
+              : []),
             {
               value: "answer",
               label: "Odpowiedź",

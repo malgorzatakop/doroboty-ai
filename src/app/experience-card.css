@@ -1,0 +1,305 @@
+/* Host extension: C01/C02/C03 controls and C22 reading on the existing r24 sheet. */
+.experience-page {
+  padding-block: 28px 64px;
+}
+.experience-header {
+  max-width: 820px;
+  margin: 32px 0 38px;
+}
+.experience-header h1 {
+  margin-bottom: 20px;
+}
+.experience-header > p:last-child {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--gui-text-muted);
+}
+.experience-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.experience-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.15fr) minmax(230px, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+.experience-layout > * {
+  min-width: 0;
+}
+.experience-editor-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 26px;
+  font-size: 14px;
+}
+.experience-question {
+  padding: 30px 0;
+  border-top: 1px solid var(--pp-line);
+}
+.experience-question-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.experience-question-heading h2 {
+  flex: 1 1 250px;
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.2;
+}
+.experience-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  border: 1px solid var(--gui-text);
+  border-radius: 50%;
+  font-size: 13px;
+  background: var(--gui-background);
+}
+.experience-requirement {
+  font-size: 11px;
+  color: var(--gui-text-muted);
+}
+.experience-prompt {
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.experience-form textarea {
+  min-height: 136px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.experience-hint {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--gui-text-muted);
+  margin-top: 12px;
+}
+.experience-character-count {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--gui-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.experience-character-count-over {
+  color: var(--destructive);
+}
+.experience-character-excess {
+  flex-basis: 100%;
+}
+.experience-stage-field {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.experience-stage-field .native-select {
+  max-width: 320px;
+  font-size: 16px;
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23181818' stroke-width='1.5' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+.experience-form .error-message {
+  margin-top: 10px;
+}
+.experience-optional {
+  border-top: 1px solid var(--pp-line);
+  padding-top: 20px;
+}
+.experience-optional > button {
+  padding: 16px 18px;
+  height: auto;
+  min-height: 72px;
+  width: 100%;
+  max-width: 100%;
+  justify-content: space-between;
+  white-space: normal;
+  text-align: left;
+}
+.experience-optional-label {
+  display: grid;
+  gap: 6px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.experience-optional-label > span:last-child {
+  font-size: 13px;
+  font-weight: 400;
+}
+.experience-optional > button > svg {
+  flex-shrink: 0;
+}
+.experience-optional > p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--gui-text-muted);
+  margin: 4px 0 22px;
+}
+.experience-footer {
+  margin-top: 12px;
+}
+.experience-footer [role="status"]:not(:empty) {
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.experience-aside {
+  position: sticky;
+  top: 28px;
+  padding: 22px 0;
+}
+.experience-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 26px;
+}
+.experience-aside h2 {
+  font-size: 34px;
+  margin-bottom: 18px;
+}
+.experience-aside p {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--gui-text-muted);
+}
+.experience-aside-note {
+  border-block: 1px solid var(--pp-line);
+  padding-block: 24px;
+  margin-block: 24px;
+}
+.experience-aside-note h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.experience-profile {
+  margin-top: 24px;
+}
+.experience-profile-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.experience-profile > p {
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.experience-profile > a {
+  margin-top: 16px;
+}
+.experience-stage {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 6px 11px;
+  background: var(--gui-color-1-transparent);
+  border-radius: 999px;
+}
+.experience-reading {
+  overflow-wrap: anywhere;
+}
+.experience-reading section {
+  padding-block: 24px;
+}
+.experience-reading section + section {
+  border-top: 1px solid var(--pp-line);
+}
+.experience-reading h3 {
+  font-size: 26px;
+  margin-bottom: 14px;
+}
+.experience-reading p {
+  font-size: 16px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  margin-top: 12px;
+}
+.experience-work-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+.application-card-choice {
+  margin-block: 18px;
+}
+.application-card-choice .experience-reading h3 {
+  font-size: 24px;
+}
+.application-card-choice > details {
+  margin-top: 16px;
+}
+.application-card-choice summary {
+  cursor: pointer;
+  padding-block: 10px;
+  font-size: 14px;
+}
+.application-card-choice summary:hover {
+  background: var(--gui-color-1-transparent);
+}
+.application-card-choice > p {
+  margin-top: 12px;
+}
+@media (max-width: 850px) {
+  .experience-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .experience-aside {
+    position: static;
+  }
+}
+@media (max-width: 600px) {
+  .experience-page {
+    padding-block: 18px 40px;
+  }
+  .experience-header {
+    margin-block: 24px 28px;
+  }
+  .experience-header h1 {
+    font-size: 43px;
+  }
+  .experience-header > p:last-child {
+    font-size: 15px;
+  }
+  .experience-question-heading h2 {
+    flex-basis: calc(100% - 42px);
+    font-size: 26px;
+  }
+  .experience-question {
+    padding-block: 26px;
+  }
+  .experience-requirement {
+    margin-left: 40px;
+  }
+  .experience-footer .record-actions {
+    flex-direction: column;
+  }
+}
